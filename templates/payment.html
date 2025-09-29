@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLUGWISE | Payment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3a86ff;
+            --primary-dark: #2667cc;
+            --background: #121212;
+            --surface: #1e1e1e;
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+            --success: #4caf50;
+            --card-bg: #252525;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background-color: var(--background);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .navbar {
+            background-color: var(--surface);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 60px;
+            width: 100px;
+        }
+        
+        .payment-container {
+            max-width: 800px;
+            margin: 8rem auto 4rem;
+            padding: 0 2rem;
+        }
+        
+        .payment-card {
+            background-color: var(--surface);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .payment-card .card-body {
+            padding: 2rem;
+        }
+        
+        .payment-card .card-title {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .booking-summary {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+        
+        .summary-item:last-child {
+            margin-bottom: 0;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .summary-item.total {
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+        
+        .form-label {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            display: block;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background-color: var(--card-bg);
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(58, 134, 255, 0.2);
+        }
+        
+        .card-details {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-block;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(58, 134, 255, 0.3);
+        }
+        
+        .payment-methods {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .payment-method {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background: var(--surface);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .payment-method:hover {
+            background: var(--card-bg);
+        }
+        
+        .payment-method.selected {
+            border-color: var(--primary);
+            background: var(--card-bg);
+        }
+        
+        .payment-method i {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <img src="https://plugwise.me/wp-content/uploads/2023/12/plugwise-logo.png" alt="PLUGWISE Logo">
+        </div>
+    </nav>
+
+    <div class="payment-container">
+        <div class="payment-card">
+            <div class="card-body">
+                <h2 class="card-title">Payment Details</h2>
+                
+                <div class="booking-summary">
+                    <h3 style="margin-bottom: 1rem; color: var(--text-primary);">Booking Summary</h3>
+                    <div class="summary-details">
+                        <div class="summary-item">
+                            <span>Vehicle Details</span>
+                            <span>{{ booking.vehicle_type }} - {{ booking.vehicle_brand }} {{ booking.vehicle_model }}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Vehicle Number</span>
+                            <span>{{ booking.vehicle_number }}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Charging Station</span>
+                            <span>{{ booking.station_name }}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Date</span>
+                            <span>{{ booking.date }}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Time Slot</span>
+                            <span>{{ booking.time_slot }}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Charger Type</span>
+                            <span>{{ booking.charger_type }}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Plug Type</span>
+                            <span>{{ booking.plug_type }}</span>
+                        </div>
+                        <div class="summary-item total">
+                            <span>Total Amount</span>
+                            <span>₹{{ booking.amount }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="payment-methods">
+                    <div class="payment-method selected" data-method="card">
+                        <i class="fas fa-credit-card"></i>
+                        <div>Card</div>
+                    </div>
+                    <div class="payment-method" data-method="upi">
+                        <i class="fas fa-mobile-alt"></i>
+                        <div>UPI</div>
+                    </div>
+                    <div class="payment-method" data-method="netbanking">
+                        <i class="fas fa-university"></i>
+                        <div>Net Banking</div>
+                    </div>
+                </div>
+
+                <form id="paymentForm" action="{{ url_for('confirmation') }}" method="POST">
+                    <!-- Hidden booking data -->
+                    <input type="hidden" name="date" value="{{ booking.date }}">
+                    <input type="hidden" name="timeSlot" value="{{ booking.time_slot }}">
+                    <input type="hidden" name="stationName" value="{{ booking.station_name }}">
+                    <input type="hidden" name="chargerType" value="{{ booking.charger_type }}">
+                    <input type="hidden" name="plugType" value="{{ booking.plug_type }}">
+                    <input type="hidden" name="vehicleType" value="{{ booking.vehicle_type }}">
+                    <input type="hidden" name="vehicleBrand" value="{{ booking.vehicle_brand }}">
+                    <input type="hidden" name="vehicleModel" value="{{ booking.vehicle_model }}">
+                    <input type="hidden" name="vehicleNumber" value="{{ booking.vehicle_number }}">
+                    <input type="hidden" name="amount" value="{{ booking.amount }}">
+                    <input type="hidden" name="paymentMethod" id="paymentMethod" value="">
+
+                    <!-- Card Payment Form -->
+                    <div id="cardPaymentForm" class="payment-form">
+                        <div class="form-group">
+                            <label class="form-label">Card Number</label>
+                            <input type="text" id="cardNumber" class="form-control" placeholder="1234 5678 9012 3456" maxlength="19">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Expiry Date</label>
+                                <input type="text" id="expiryDate" class="form-control" placeholder="MM/YY" maxlength="5">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">CVV</label>
+                                <input type="password" id="cvv" class="form-control" placeholder="123" maxlength="3">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Card Holder Name</label>
+                            <input type="text" id="cardName" class="form-control" placeholder="John Doe">
+                        </div>
+                    </div>
+
+                    <!-- UPI Payment Form -->
+                    <div id="upiPaymentForm" class="payment-form" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label">UPI ID</label>
+                            <input type="text" id="upiId" class="form-control" placeholder="username@upi">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">UPI App</label>
+                            <select id="upiApp" class="form-control">
+                                <option value="">Select UPI App</option>
+                                <option value="gpay">Google Pay</option>
+                                <option value="phonepe">PhonePe</option>
+                                <option value="paytm">Paytm</option>
+                                <option value="amazonpay">Amazon Pay</option>
+                                <option value="bhim">BHIM</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Net Banking Form -->
+                    <div id="netBankingForm" class="payment-form" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label">Select Bank</label>
+                            <select id="bankName" class="form-control">
+                                <option value="">Select your bank</option>
+                                <option value="sbi">State Bank of India</option>
+                                <option value="hdfc">HDFC Bank</option>
+                                <option value="icici">ICICI Bank</option>
+                                <option value="axis">Axis Bank</option>
+                                <option value="kotak">Kotak Mahindra Bank</option>
+                                <option value="pnb">Punjab National Bank</option>
+                                <option value="bob">Bank of Baroda</option>
+                                <option value="canara">Canara Bank</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <span class="button-text">Pay ₹{{ booking.amount }}</span>
+                        <span class="processing-text" style="display: none;">
+                            <i class="fas fa-spinner fa-spin"></i> Processing...
+                        </span>
+                    </button>
+                </form>
+
+                <script>
+                    // Payment method selection
+                    const paymentMethods = document.querySelectorAll('.payment-method');
+                    const cardForm = document.getElementById('cardPaymentForm');
+                    const upiForm = document.getElementById('upiPaymentForm');
+                    const netBankingForm = document.getElementById('netBankingForm');
+                    const paymentMethodInput = document.getElementById('paymentMethod');
+
+                    paymentMethods.forEach(method => {
+                        method.addEventListener('click', function() {
+                            // Update selected state
+                            paymentMethods.forEach(m => m.classList.remove('selected'));
+                            this.classList.add('selected');
+
+                            // Get selected method
+                            const selectedMethod = this.dataset.method;
+                            paymentMethodInput.value = selectedMethod;
+
+                            // Show/hide forms
+                            cardForm.style.display = selectedMethod === 'card' ? 'block' : 'none';
+                            upiForm.style.display = selectedMethod === 'upi' ? 'block' : 'none';
+                            netBankingForm.style.display = selectedMethod === 'netbanking' ? 'block' : 'none';
+
+                            // Update required fields
+                            cardForm.querySelectorAll('input').forEach(input => input.required = selectedMethod === 'card');
+                            upiForm.querySelectorAll('input, select').forEach(input => input.required = selectedMethod === 'upi');
+                            netBankingForm.querySelectorAll('select').forEach(input => input.required = selectedMethod === 'netbanking');
+                        });
+                    });
+
+                    // Format card number input
+                    document.getElementById('cardNumber').addEventListener('input', function(e) {
+                        let value = e.target.value.replace(/\D/g, '');
+                        let formattedValue = '';
+                        for (let i = 0; i < value.length; i++) {
+                            if (i > 0 && i % 4 === 0) {
+                                formattedValue += ' ';
+                            }
+                            formattedValue += value[i];
+                        }
+                        e.target.value = formattedValue;
+                    });
+
+                    // Format expiry date
+                    document.getElementById('expiryDate').addEventListener('input', function(e) {
+                        let value = e.target.value.replace(/\D/g, '');
+                        if (value.length > 2) {
+                            value = value.slice(0, 2) + '/' + value.slice(2);
+                        }
+                        e.target.value = value;
+                    });
+
+                    // Handle form submission
+                    document.getElementById('paymentForm').addEventListener('submit', function(e) {
+                        const buttonText = this.querySelector('.button-text');
+                        const processingText = this.querySelector('.processing-text');
+
+                        // Show processing state
+                        buttonText.style.display = 'none';
+                        processingText.style.display = 'inline-flex';
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

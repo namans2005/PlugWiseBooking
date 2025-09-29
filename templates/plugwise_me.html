@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLUGWISE | Booking</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3a86ff;
+            --primary-dark: #2667cc;
+            --background: #121212;
+            --surface: #1e1e1e;
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+            --success: #4caf50;
+            --card-bg: #252525;
+            --border: #333333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background-color: var(--background);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        .navbar {
+            background-color: var(--surface);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo img {
+            height: 40px;
+            width: auto;
+        }
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-welcome {
+            background-color: var(--primary);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: var(--surface);
+            border-radius: 8px;
+            min-width: 150px;
+            margin-top: 5px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .user-menu a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
+            color: var(--text-primary);
+            text-decoration: none;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .user-menu a:hover {
+            background-color: var(--card-bg);
+        }
+
+        .main-content {
+            padding: 6rem 2rem 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .booking-form {
+            background-color: var(--surface);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .booking-form h2 {
+            color: var(--primary);
+            margin-bottom: 2rem;
+            font-size: 1.8rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.1);
+        }
+
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .time-slot {
+            padding: 1rem;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            color: var(--text-primary);
+        }
+
+        .time-slot:hover {
+            border-color: var(--primary);
+            background-color: rgba(58, 134, 255, 0.1);
+        }
+
+        .time-slot.selected {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s;
+            width: 100%;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .station-info {
+            background-color: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border);
+        }
+
+        .station-info h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .station-info p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .station-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            background-color: var(--surface);
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .station-details div {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .station-details strong {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .station-details span {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .vehicle-type-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .vehicle-type-btn {
+            flex: 1;
+            padding: 1rem;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            color: var(--text-primary);
+        }
+
+        .vehicle-type-btn:hover {
+            border-color: var(--primary);
+            background-color: rgba(58, 134, 255, 0.1);
+        }
+
+        .vehicle-type-btn.selected {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .vehicle-type-btn i {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 5rem 1rem 1rem;
+            }
+            
+            .booking-form {
+                padding: 1.5rem;
+            }
+            
+            .time-slots {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <a href="{{ url_for('home') }}">
+                <img src="{{ url_for('static', filename='images/Logo-no-bg.png') }}" alt="PLUGWISE">
+            </a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('maps') }}">Find Stations</a></li>
+            <li><a href="{{ url_for('support') }}">Support</a></li>
+            {% if current_user.is_authenticated %}
+                <li><a href="{{ url_for('plugwise_me') }}">Bookings</a></li>
+                <li class="user-info">
+                    <div class="user-welcome">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Welcome, {{ current_user.name }}!</span>
+                    </div>
+                    <div class="user-actions">
+                        <button onclick="toggleUserMenu()" style="background: none; border: none; color: white; cursor: pointer;">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div id="userMenu" class="user-menu">
+                            <a href="{{ url_for('profile') }}">
+                                <i class="fas fa-user"></i>
+                                Profile
+                            </a>
+                            <a href="{{ url_for('plugwise_me') }}">
+                                <i class="fas fa-bookmark"></i>
+                                My Bookings
+                            </a>
+                            <a href="{{ url_for('logout') }}">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Logout
+                            </a>
+                        </div>
+                    </div>
+                </li>
+            {% else %}
+                <li><a href="{{ url_for('login') }}" class="btn">Login</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <div class="main-content">
+        <div class="booking-form">
+            <h2>Book Your Charging Session</h2>
+            <form action="{{ url_for('payment') }}" method="GET" id="bookingForm">
+                <div class="form-group">
+                    <label class="form-label">Vehicle Type</label>
+                    <div class="vehicle-type-selector">
+                        <div class="vehicle-type-btn" data-type="2wheeler">
+                            <i class="fas fa-motorcycle"></i>
+                            <span>2 Wheeler</span>
+                        </div>
+                        <div class="vehicle-type-btn" data-type="4wheeler">
+                            <i class="fas fa-car"></i>
+                            <span>4 Wheeler</span>
+                        </div>
+                    </div>
+                    <input type="hidden" id="vehicleType" name="vehicleType" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Date</label>
+                    <input type="date" class="form-control" id="date" name="date" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Vehicle Brand</label>
+                    <select class="form-control" id="vehicleBrand" name="vehicleBrand" required>
+                        <option value="">Select vehicle brand</option>
+                        <option value="tesla">Tesla</option>
+                        <option value="bmw">BMW</option>
+                        <option value="mercedes">Mercedes-Benz</option>
+                        <option value="audi">Audi</option>
+                        <option value="porsche">Porsche</option>
+                        <option value="volkswagen">Volkswagen</option>
+                        <option value="nissan">Nissan</option>
+                        <option value="hyundai">Hyundai</option>
+                        <option value="kia">Kia</option>
+                        <option value="ather">Ather</option>
+                        <option value="ola">Ola</option>
+                        <option value="tvs">TVS</option>
+                        <option value="bajaj">Bajaj</option>
+                        <option value="hero">Hero</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Vehicle Model</label>
+                    <select class="form-control" id="vehicleModel" name="vehicleModel" required>
+                        <option value="">Select vehicle model</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Vehicle Number</label>
+                    <input type="text" class="form-control" id="vehicleNumber" name="vehicleNumber" placeholder="Enter your vehicle registration number" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Charging Station</label>
+                    {% if station_info %}
+                        <div class="station-info">
+                            <h3>{{ station_info.name }}</h3>
+                            <p>{{ station_info.address }}</p>
+                            <div class="station-details">
+                                <div>
+                                    <strong>Type:</strong>
+                                    <span>{{ station_info.type }}</span>
+                                </div>
+                                <div>
+                                    <strong>Power:</strong>
+                                    <span>{{ station_info.power }}</span>
+                                </div>
+                                <div>
+                                    <strong>Price:</strong>
+                                    <span>{{ station_info.price }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="selectedStation" name="selectedStation" value="{{ station_info.name }}">
+                        <input type="hidden" id="stationId" name="stationId" value="{{ station_info.id }}">
+                        <input type="hidden" id="stationType" name="stationType" value="{{ station_info.type }}">
+                        <input type="hidden" id="stationPower" name="stationPower" value="{{ station_info.power }}">
+                        <input type="hidden" id="stationPrice" name="stationPrice" value="{{ station_info.price }}">
+                    {% else %}
+                        <div class="station-info" style="text-align: center;">
+                            <i class="fas fa-map-marker-alt" style="font-size: 24px; color: var(--primary); margin-bottom: 10px;"></i>
+                            <p>No charging station selected.</p>
+                            <a href="{{ url_for('maps') }}" class="btn" style="display: inline-block; margin-top: 10px;">Select Station from Map</a>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Time Slots</label>
+                    <div class="time-slots">
+                        <div class="time-slot" data-time="09:00">09:00 - 10:00</div>
+                        <div class="time-slot" data-time="10:00">10:00 - 11:00</div>
+                        <div class="time-slot" data-time="11:00">11:00 - 12:00</div>
+                        <div class="time-slot" data-time="13:00">13:00 - 14:00</div>
+                        <div class="time-slot" data-time="14:00">14:00 - 15:00</div>
+                        <div class="time-slot" data-time="15:00">15:00 - 16:00</div>
+                        <div class="time-slot" data-time="16:00">16:00 - 17:00</div>
+                        <div class="time-slot" data-time="17:00">17:00 - 18:00</div>
+                        <div class="time-slot" data-time="18:00">18:00 - 19:00</div>
+                        <div class="time-slot" data-time="19:00">19:00 - 20:00</div>
+                        <div class="time-slot" data-time="20:00">20:00 - 21:00</div>
+                        <div class="time-slot" data-time="21:00">21:00 - 22:00</div>
+                    </div>
+                    <input type="hidden" id="selectedTimeSlot" name="selectedTimeSlot">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Charger Type</label>
+                    <select class="form-control" id="chargerType" name="chargerType" required>
+                        <option value="">Select a charger type</option>
+                        <option value="Level 1 AC charger"> - Level 1 AC Charger</option>
+                        <option value="Level 2 AC charger"> - Level 2 AC Charger</option>
+                        <option value="Level 3 DC charger"> - Level 3 DC Charger</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Vehicle Plug</label>
+                    <select class="form-control" id="plugType" name="plugType" required>
+                        <option value="">Select a plug type</option>
+                        <option value="CCS-Type 1">CCS-Type 1 </option>
+                        <option value="CCS-Type 2">CCS-Type 2</option>
+                        <option value="GB\T">GB\T</option>
+                        <option value="CHAdeMO">CHAdeMO</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn" id="generateBookingBtn">Generate Booking Ticket</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Vehicle type selection
+        document.querySelectorAll('.vehicle-type-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.vehicle-type-btn').forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+                document.getElementById('vehicleType').value = this.dataset.type;
+            });
+        });
+
+        // Vehicle models data
+        const vehicleModels = {
+            // 4 Wheelers
+            tesla: ['Model 3', 'Model S', 'Model X', 'Model Y', 'Cybertruck'],
+            bmw: ['i4', 'iX', 'iX3', 'i7', 'iX5'],
+            mercedes: ['EQS', 'EQE', 'EQA', 'EQB', 'EQC'],
+            audi: ['e-tron', 'e-tron GT', 'Q4 e-tron', 'Q8 e-tron', 'RS e-tron GT'],
+            porsche: ['Taycan', 'Taycan Cross Turismo', 'Taycan Sport Turismo'],
+            volkswagen: ['ID.3', 'ID.4', 'ID.5', 'ID.6', 'ID.Buzz'],
+            nissan: ['Leaf', 'Ariya'],
+            hyundai: ['IONIQ 5', 'IONIQ 6', 'Kona Electric', 'Tucson PHEV'],
+            kia: ['EV6', 'Niro EV', 'Soul EV', 'Sorento PHEV'],
+            // 2 Wheelers
+            ather: ['450X', '450 Plus', '450S'],
+            ola: ['S1', 'S1 Pro', 'S1 Air'],
+            tvs: ['iQube', 'iQube S'],
+            bajaj: ['Chetak', 'Chetak Premium'],
+            hero: ['Optima', 'NYX', 'Vida'],
+            other: ['Other Model']
+        };
+
+        // Update vehicle models when brand changes
+        document.getElementById('vehicleBrand').addEventListener('change', function() {
+            const modelSelect = document.getElementById('vehicleModel');
+            const selectedBrand = this.value;
+            
+            modelSelect.innerHTML = '<option value="">Select vehicle model</option>';
+            
+            if (selectedBrand && vehicleModels[selectedBrand]) {
+                vehicleModels[selectedBrand].forEach(model => {
+                    const option = document.createElement('option');
+                    option.value = model.toLowerCase().replace(/\s+/g, '-');
+                    option.textContent = model;
+                    modelSelect.appendChild(option);
+                });
+            }
+        });
+
+        // Time slot selection
+        document.querySelectorAll('.time-slot').forEach(slot => {
+            slot.addEventListener('click', function() {
+                document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+                this.classList.add('selected');
+                document.getElementById('selectedTimeSlot').value = this.dataset.time;
+            });
+        });
+
+        // Form validation
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const vehicleType = document.getElementById('vehicleType').value;
+            if (!vehicleType) {
+                alert('Please select a vehicle type');
+                return;
+            }
+
+            const selectedTimeSlot = document.querySelector('.time-slot.selected');
+            if (!selectedTimeSlot) {
+                alert('Please select a time slot');
+                return;
+            }
+
+            if (!document.getElementById('selectedStation').value) {
+                alert('Please select a charging station from the map');
+                return;
+            }
+
+            // If all validations pass, submit the form
+            this.submit();
+        });
+
+        // Toggle user menu
+        function toggleUserMenu() {
+            const menu = document.getElementById('userMenu');
+            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('userMenu');
+            const userInfo = event.target.closest('.user-info');
+            if (!userInfo && menu.style.display === 'block') {
+                menu.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

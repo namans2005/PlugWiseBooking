@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLUGWISE | Station Info</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Leaflet Routing Machine CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <style>
+        :root {
+            --primary: #3a86ff;
+            --primary-dark: #2667cc;
+            --background: #121212;
+            --surface: #1e1e1e;
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+            --success: #4caf50;
+            --card-bg: #252525;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background-color: var(--background);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background-color: var(--surface);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .logo img {
+            height: 60px;
+            width: 100px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .login-btn {
+            background-color: var(--primary);
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        
+        .login-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .station-container {
+            max-width: 1200px;
+            margin: 100px auto 40px;
+            padding: 0 2rem;
+        }
+
+        .station-header {
+            background-color: var(--surface);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .station-header h1 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .station-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .station-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .detail-card {
+            background-color: var(--surface);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .detail-card h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .detail-card i {
+            font-size: 1.2rem;
+        }
+
+        .detail-card ul {
+            list-style: none;
+        }
+
+        .detail-card li {
+            margin-bottom: 0.8rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .detail-card li i {
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+        .availability {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--success);
+        }
+
+        .book-btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-top: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .book-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .reviews {
+            background-color: var(--surface);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .review-item {
+            border-bottom: 1px solid var(--card-bg);
+            padding: 1rem 0;
+        }
+
+        .review-item:last-child {
+            border-bottom: none;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .rating {
+            color: #ffd700;
+        }
+
+        /* Map Container Styles */
+        .map-container {
+            height: 400px;
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        #route-map {
+            height: 100%;
+            width: 100%;
+        }
+
+        /* Routing Container Styles */
+        .leaflet-routing-container {
+            background-color: var(--surface);
+            color: var(--text-primary);
+            padding: 1rem;
+            border-radius: 8px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .leaflet-routing-alt {
+            background-color: var(--surface) !important;
+            color: var(--text-primary) !important;
+        }
+
+        .leaflet-routing-container h2 {
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .leaflet-routing-container h3 {
+            color: var(--text-primary);
+            font-size: 1rem;
+            margin: 0.5rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .station-container {
+                padding: 0 1rem;
+                margin-top: 80px;
+            }
+
+            .station-header {
+                padding: 1.5rem;
+            }
+
+            .detail-card {
+                padding: 1rem;
+            }
+
+            .map-container {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <a href="{{ url_for('home') }}">
+                <img src="{{ url_for('static', filename='images/plug.jpeg') }}" alt="PLUGWISE Logo">
+            </a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('maps') }}">Maps</a></li>
+            <li><a href="{{ url_for('support') }}">Support</a></li>
+            <li><a href="{{ url_for('login') }}" class="login-btn">Login</a></li>
+        </ul>
+    </nav>
+
+    <div class="station-container">
+        <div class="station-header">
+            <h1 id="station-name">Loading...</h1>
+            <p id="station-address">Loading...</p>
+        </div>
+
+        <div class="station-details">
+            <div class="detail-card">
+                <h2><i class="fas fa-charging-station"></i> Charging Details</h2>
+                <ul>
+                    <li><i class="fas fa-bolt"></i> <span id="charging-type">Loading...</span></li>
+                    <li><i class="fas fa-plug"></i> <span id="connector-types">Loading...</span></li>
+                    <li><i class="fas fa-battery-full"></i> <span id="power-output">Loading...</span></li>
+                    <li><i class="fas fa-clock"></i> <span id="charging-time">Loading...</span></li>
+                </ul>
+                <div class="availability">
+                    <div class="status-indicator"></div>
+                    <span id="availability-status">Available Now</span>
+                </div>
+            </div>
+
+            <div class="detail-card">
+                <h2><i class="fas fa-info-circle"></i> Amenities</h2>
+                <ul>
+                    <li><i class="fas fa-wifi"></i> Free Wi-Fi</li>
+                    <li><i class="fas fa-coffee"></i> Café</li>
+                    <li><i class="fas fa-restroom"></i> Restrooms</li>
+                    <li><i class="fas fa-car"></i> Parking Available</li>
+                </ul>
+                <a href="randomqr.html" class="book-btn" id="book-btn">Book Slot</a>
+            </div>
+
+            <div class="detail-card">
+                <h2><i class="fas fa-rupee-sign"></i> Pricing</h2>
+                <ul>
+                    <li><i class="fas fa-bolt"></i> Fast Charging: ₹15/kWh</li>
+                    <li><i class="fas fa-clock"></i> Standard Charging: ₹10/kWh</li>
+                    <li><i class="fas fa-parking"></i> Parking Fee: ₹20/hour</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Route Map Section -->
+        <div class="detail-card">
+            <h2><i class="fas fa-route"></i> Navigation</h2>
+            <div class="map-container">
+                <div id="route-map"></div>
+            </div>
+            <div id="route-info" style="margin-top: 1rem; color: var(--text-secondary);"></div>
+        </div>
+
+        <div class="reviews">
+            <h2><i class="fas fa-star"></i> Reviews</h2>
+            <div class="review-item">
+                <div class="review-header">
+                    <strong>John Doe</strong>
+                    <div class="rating">★★★★★</div>
+                </div>
+                <p>Great charging station! Fast charging worked perfectly and the café has good coffee.</p>
+            </div>
+            <div class="review-item">
+                <div class="review-header">
+                    <strong>Jane Smith</strong>
+                    <div class="rating">★★★★☆</div>
+                </div>
+                <p>Clean facility and helpful staff. Slightly expensive but worth it for the amenities.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Leaflet Routing Machine JS -->
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+    <script src="https://unpkg.com/cursor-effects@latest/dist/browser.js"></script>
+    <script>
+        // Get station ID from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const stationId = urlParams.get('id');
+
+        // Station data with coordinates
+        const stationData = {
+            'pune-central': {
+                name: 'Pune Central Charging Hub',
+                address: '123 MG Road, Camp, Pune, Maharashtra 411001',
+                type: 'Fast Charging',
+                connectors: 'CCS2, CHAdeMO, Type 2',
+                power: '150 kW DC, 22 kW AC',
+                chargingTime: '20-40 minutes (DC), 3-4 hours (AC)',
+                coordinates: [18.5204, 73.8567]
+            },
+            'viman-nagar': {
+                name: 'Viman Nagar EV Station',
+                address: '45 Phoenix Mall Road, Viman Nagar, Pune, Maharashtra 411014',
+                type: 'Fast Charging',
+                connectors: 'CCS2, Type 2',
+                power: '120 kW DC, 22 kW AC',
+                chargingTime: '25-45 minutes (DC), 3-4 hours (AC)',
+                coordinates: [18.5089, 73.9259]
+            },
+            'swargate': {
+                name: 'Swargate Charging Point',
+                address: '78 Satara Road, Swargate, Pune, Maharashtra 411037',
+                type: 'Standard Charging',
+                connectors: 'Type 2, Type 1',
+                power: '22 kW AC',
+                chargingTime: '3-4 hours',
+                coordinates: [18.4519, 73.8508]
+            },
+            'wakad': {
+                name: 'Shell Recharge Charging Station',
+                address: 'Service Rd, Tathawade, Pimpri-Chinchwad, Maharashtra 411033',
+                type: 'Fast Charging',
+                connectors: 'CCS, CHAdeMO',
+                power: '30 kW DC',
+                chargingTime: '20-40 minutes (DC), 3-4 hours (AC)',
+                coordinates: [18.5793, 73.9089]
+            },
+            'balewadi': {
+                name: 'Evnnovator Charging Station',
+                address: 'Bhandari Motors, Mercedes Benz, Veerbhadra Nagar Rd, Mahalunge, Pune, Maharashtra 411045',
+                type: 'Fast Charging',
+                connectors: 'CCS',
+                power: '90 kW DC',
+                chargingTime: '20-40 minutes (DC), 3-4 hours (AC)',
+                coordinates: [18.5642, 73.7768]
+            },
+                    'ravet': {
+                name: 'E Fill Electric Charging Station',
+                address: 'NH4, Ravet, Pimpri-Chinchwad, Maharashtra 412101',
+                type: 'Fast Charging',
+                connectors: 'CCS2, CHAdeMO',
+                power: '60 kW DC',
+                chargingTime: '30-50 minutes',
+                coordinates: [18.6514, 73.7086]
+            },
+            'pimple-saudagar': {
+                name: 'Tata Power Charging Station',
+                address: 'JQ6M+F86, Indrayani Nagar, Nakhate Nagar, Thergaon, Pimpri-Chinchwad, Maharashtra 411033',
+                type: 'Fast Charging',
+                connectors: 'CCS2, Type 2',
+                power: '50 kW DC',
+                chargingTime: '30-60 minutes',
+                coordinates: [18.5922, 73.7905]
+            },
+            'balewadi': {
+                name: 'Evnnovator Charging Station',
+                address: 'Bhandari Motors, Mercedes Benz, Veerbhadra Nagar Rd, Mahalunge',
+                type: 'Fast Charging',
+                connectors: 'CCS',
+                power: '90 kW DC',
+                chargingTime: '20-40 minutes',
+                coordinates: [18.5642, 73.7768]
+            },
+            'wakad-2': {
+                name: 'ABB Charging Station',
+                address: 'HQXJ+R88, Park Street, Wakad, Pimpri-Chinchwad, Maharashtra 411027',
+                type: 'Fast Charging',
+                connectors: 'CCS2, Type 2',
+                power: '60 kW DC',
+                chargingTime: '30-50 minutes',
+                coordinates: [18.5994, 73.7625]
+            },
+            'new-sanghvi': {
+                name: 'Electric Vehicle Charging Station',
+                address: 'HRJ8+77W, Hinjawadi - Pirangut Rd, near Hotel Arabian Hills, Shivaji Park, New Sangavi, Godambewadi, Pune, Maharashtra 412115',
+                type: 'Fast Charging',
+                connectors: 'CCS2, CHAdeMO',
+                power: '50 kW DC',
+                chargingTime: '30-60 minutes',
+                coordinates: [18.6167, 73.7250]
+            },
+            'shukrawarpeth': {
+                name: 'Bijlify Charging Station',
+                address: 'GV24+WJ3, Dadawadi, Shukrawar Peth, Pune, Maharashtra 411042',
+                type: 'Fast Charging',
+                connectors: 'CCS2, Type 2',
+                power: '60 kW DC',
+                chargingTime: '30-50 minutes',
+                coordinates: [18.5104, 73.8477]
+            },
+        };
+
+        // Initialize variables
+        let map;
+        let routeControl;
+        let userPosition = null;
+        const defaultStart = [18.449028,73.825694]; // Default start location (Pune Airport)
+
+        // Update page content based on station ID
+        if (stationId && stationData[stationId]) {
+            const station = stationData[stationId];
+            
+            // Update station info
+            document.getElementById('station-name').textContent = station.name;
+            document.getElementById('station-address').textContent = station.address;
+            document.getElementById('charging-type').textContent = station.type;
+            document.getElementById('connector-types').textContent = station.connectors;
+            document.getElementById('power-output').textContent = station.power;
+            document.getElementById('charging-time').textContent = station.chargingTime;
+            
+            // Initialize map with the station location
+            initMap(station.coordinates);
+            
+            // Set up booking button to pass station ID to randomqr.html
+            document.getElementById('book-btn').addEventListener('click', function(e) {
+                if (!stationId) return;
+                e.preventDefault();
+                window.location.href = `randomqr.html?stationId=${stationId}`;
+            });
+        } else {
+            document.getElementById('station-name').textContent = 'Station Not Found';
+            document.getElementById('station-address').textContent = 'Invalid station ID';
+        }
+
+        // Initialize map and routing
+        function initMap(stationCoords) {
+            // Create map centered on the station
+            map = L.map('route-map').setView(stationCoords, 13);
+            
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Try to get user's current location
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        userPosition = [position.coords.latitude, position.coords.longitude];
+                        calculateRoute(userPosition, stationCoords);
+                    },
+                    (error) => {
+                        console.error('Geolocation error:', error);
+                        // Use default start location if geolocation fails
+                        calculateRoute(defaultStart, stationCoords);
+                    }
+                );
+            } else {
+                // Use default start location if geolocation not supported
+                calculateRoute(defaultStart, stationCoords);
+            }
+
+            // Add station marker
+            const stationMarker = L.marker(stationCoords, {
+                icon: L.divIcon({
+                    className: 'custom-marker',
+                    iconSize: [16, 16],
+                    html: '<div style="background-color: var(--primary);"></div>'
+                })
+            }).addTo(map);
+            stationMarker.bindPopup(`<b>${document.getElementById('station-name').textContent}</b>`);
+        }
+
+        // Calculate and display route
+        function calculateRoute(startCoords, endCoords) {
+            // Remove existing route if any
+            if (routeControl) {
+                map.removeControl(routeControl);
+            }
+
+            // Add start marker
+            const startMarker = L.marker(startCoords, {
+                icon: L.divIcon({
+                    className: 'custom-marker',
+                    iconSize: [16, 16],
+                    html: '<div style="background-color: #4caf50;"></div>'
+                })
+            }).addTo(map);
+            startMarker.bindPopup('<b>Your Location</b>');
+
+            // Create new route
+            routeControl = L.Routing.control({
+                waypoints: [
+                    L.latLng(startCoords[0], startCoords[1]),
+                    L.latLng(endCoords[0], endCoords[1])
+                ],
+                router: L.Routing.osrmv1({
+                    serviceUrl: 'https://router.project-osrm.org/route/v1',
+                    profile: 'driving'
+                }),
+                lineOptions: {
+                    styles: [
+                        {color: 'var(--primary)', opacity: 0.8, weight: 6}
+                    ]
+                },
+                createMarker: function() { return null; }, // Don't create default markers
+                addWaypoints: false,
+                draggableWaypoints: false,
+                fitSelectedRoutes: true,
+                showAlternatives: false
+            }).addTo(map);
+
+            // Update route info when route is found
+            routeControl.on('routesfound', function(e) {
+                const routes = e.routes;
+                const summary = routes[0].summary;
+                const time = Math.round(summary.totalTime / 60);
+                const distance = Math.round(summary.totalDistance / 1000 * 10) / 10;
+                
+                document.getElementById('route-info').innerHTML = `
+                    <p><strong>Distance:</strong> ${distance} km</p>
+                    <p><strong>Estimated Time:</strong> ${time} minutes</p>
+                `;
+            });
+        }
+
+        window.addEventListener("load", (event) => {
+            new cursoreffects.bubbleCursor();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLUGWISE | Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script src="https://unpkg.com/cursor-effects@latest/dist/browser.js"></script>
+    <script>window.addEventListener("load", (event) => {
+        new cursoreffects.bubbleCursor();
+      });</script>
+    <style>
+        :root {
+            --primary: #3a86ff;
+            --primary-dark: #2667cc;
+            --background: #121212;
+            --surface: #1e1e1e;
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+            --success: #4caf50;
+            --card-bg: #252525;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background-color: var(--background);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: #1a1a1a;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            width: 100%;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 50px;
+            width: auto;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo:hover img {
+            transform: scale(1.05);
+        }
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+            background-color: rgba(58, 134, 255, 0.1);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-info span {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        
+        .profile-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .profile-icon:hover {
+            background-color: var(--primary-dark);
+            transform: scale(1.05);
+        }
+        
+        .profile-icon i {
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .profile-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 2rem;
+            background-color: #1a1a1a;
+            border-radius: 8px;
+            padding: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: none;
+            min-width: 180px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .profile-dropdown.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .profile-dropdown a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+        }
+        
+        .profile-dropdown a:hover {
+            background-color: rgba(58, 134, 255, 0.1);
+            color: var(--primary);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .hero {
+            padding: 8rem 2rem 6rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuKSIvPjwvc3ZnPg==');
+            opacity: 0.3;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .hero h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: white;
+            border-radius: 2px;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .search-container {
+            max-width: 800px;
+            margin: -3rem auto 3rem;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: fadeInUp 0.8s forwards 0.3s;
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .search-box {
+            background-color: var(--surface);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .search-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 1.2rem 1.5rem;
+            border: 2px solid #333;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            background-color: var(--card-bg);
+            color: var(--text-primary);
+            transition: all 0.4s ease;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(58, 134, 255, 0.2);
+        }
+        
+        .suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: var(--surface);
+            border-radius: 8px;
+            margin-top: 0.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            display: none;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1000;
+            transform-origin: top;
+            animation: scaleIn 0.2s ease-out forwards;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        @keyframes scaleIn {
+            from {
+                transform: scaleY(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scaleY(1);
+                opacity: 1;
+            }
+        }
+        
+        .suggestions.active {
+            display: block;
+        }
+        
+        .suggestion-item {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid var(--card-bg);
+        }
+        
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+        
+        .suggestion-item:hover {
+            background-color: var(--card-bg);
+            transform: translateX(5px);
+        }
+        
+        .station-suggestion {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid var(--card-bg);
+        }
+        
+        .station-suggestion:hover {
+            background-color: var(--card-bg);
+            transform: translateX(5px);
+        }
+        
+        .station-suggestion h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        .station-suggestion p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .station-suggestion .station-type {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            background-color: var(--primary);
+            color: white;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+        
+        .station-suggestion:hover .station-type {
+            background-color: var(--primary-dark);
+        }
+        
+        .map-container {
+            height: 600px;
+            margin: 0 2rem 4rem;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: fadeInUp 0.8s forwards 0.5s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+        
+        .leaflet-popup-content-wrapper {
+            background-color: var(--surface);
+            color: var(--text-primary);
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .leaflet-popup-content-wrapper:hover {
+            transform: scale(1.02);
+        }
+        
+        .leaflet-popup-tip {
+            background-color: var(--surface);
+        }
+        
+        .leaflet-popup-content {
+            margin: 10px;
+        }
+        
+        .leaflet-popup-content h3 {
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .leaflet-popup-content p {
+            color: var(--text-secondary);
+            margin: 0;
+        }
+        
+        .custom-marker {
+            background-color: var(--primary);
+            border: 2px solid white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .custom-marker:hover {
+            transform: scale(1.5);
+            box-shadow: 0 0 15px var(--primary);
+        }
+        
+        .custom-marker::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background-color: white;
+            border-radius: 50%;
+        }
+        
+        .services-container {
+            padding: 4rem 2rem;
+            background-color: var(--surface);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .services-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuKSIvPjwvc3ZnPg==');
+            opacity: 0.1;
+        }
+        
+        .services-container h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 3rem;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .services-container h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background-color: var(--primary);
+            border-radius: 2px;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .service-card {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: translateY(20px);
+            opacity: 0;
+        }
+        
+        .service-card:nth-child(1) {
+            animation: fadeInUp 0.6s forwards 0.2s;
+        }
+        
+        .service-card:nth-child(2) {
+            animation: fadeInUp 0.6s forwards 0.4s;
+        }
+        
+        .service-card:nth-child(3) {
+            animation: fadeInUp 0.6s forwards 0.6s;
+        }
+        
+        .service-card:nth-child(4) {
+            animation: fadeInUp 0.6s forwards 0.8s;
+        }
+        
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(58, 134, 255, 0.1), transparent);
+            transition: 0.5s;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            border-color: rgba(58, 134, 255, 0.3);
+        }
+        
+        .service-card:hover::before {
+            left: 100%;
+        }
+        
+        .servsice-card i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .service-card:hover i {
+            transform: scale(1.2);
+            color: white;
+        }
+        
+        .service-card h3 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .service-card:hover h3 {
+            color: var(--primary);
+        }
+        
+        .service-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            transition: all 0.3s ease;
+        }
+        
+        .service-card:hover p {
+            color: var(--text-primary);
+        }
+        
+        /* Pulse animation for charging stations */
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(58, 134, 255, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(58, 134, 255, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(58, 134, 255, 0);
+            }
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        /* Floating animation */
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+        
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        /* Scroll reveal animation */
+        .reveal {
+            position: relative;
+            transform: translateY(50px);
+            opacity: 0;
+            transition: all 1s ease;
+        }
+        
+        .reveal.active {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+            
+            .nav-links {
+                gap: 1rem;
+            }
+            
+            .hero {
+                padding: 6rem 1rem 4rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .search-container {
+                margin: -2rem auto 2rem;
+                padding: 0 1rem;
+            }
+            
+            .search-box {
+                padding: 1.5rem;
+            }
+            
+            .map-container {
+                height: 400px;
+                margin: 0 1rem 2rem;
+            }
+            
+            .services-container {
+                padding: 2rem 1rem;
+            }
+            
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+}
+
+.footer-section h3 {
+    color: var(--text);
+    margin-bottom: 1.5rem;
+}
+
+.footer-section ul {
+    list-style: none;
+}
+
+.footer-section ul li {
+    margin-bottom: 0.8rem;
+}
+
+.footer-section a {
+    color: var(--text-light);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-section a:hover {
+    color: var(--primary);
+}
+
+.footer-bottom {
+    text-align: center;
+    padding: 1.5rem;
+    background-color: var(--background);
+    color: var(--text-light);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
+}
+
+.user-info span {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.user-info .nav-btn {
+    background-color: var(--primary);
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.user-info .nav-btn:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(58, 134, 255, 0.3);
+}
+
+.profile-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: var(--surface);
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    padding: 1rem;
+    min-width: 200px;
+    display: none;
+    z-index: 1000;
+}
+
+.profile-dropdown.active {
+    display: block;
+}
+
+.profile-dropdown a {
+    display: block;
+    padding: 0.8rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+}
+
+.profile-dropdown a:hover {
+    background-color: var(--primary);
+    color: white;
+}
+
+.profile-icon {
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    background-color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.profile-icon:hover {
+    background-color: var(--primary-dark);
+    transform: scale(1.05);
+}
+
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <a href="{{ url_for('home') }}">
+                <img src="{{ url_for('static', filename='images/Logo-no-bg.png') }}" alt="PLUGWISE">
+            </a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('maps') }}">Find Stations</a></li>
+            <li><a href="{{ url_for('support') }}">Support</a></li>
+            {% if current_user.is_authenticated %}
+                <li><a href="{{ url_for('plugwise_me') }}">Bookings</a></li>
+                <li class="user-info" style="display: flex; align-items: center; gap: 10px;">
+                    <div class="user-welcome" style="color: #fff; padding: 8px 15px; background: rgba(255,255,255,0.1); border-radius: 20px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-user-circle" style="font-size: 18px;"></i>
+                        <span style="font-weight: 500;">Welcome, {{ current_user.name }}!</span>
+                    </div>
+                    <div class="user-actions" style="position: relative;">
+                        <button onclick="toggleUserMenu()" style="background: none; border: none; color: white; cursor: pointer; padding: 5px;">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div id="userMenu" class="user-menu" style="display: none; position: absolute; right: 0; top: 100%; background: var(--surface); border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.3); min-width: 150px; margin-top: 5px;">
+                            <a href="{{ url_for('profile') }}" style="display: flex; align-items: center; gap: 8px; padding: 10px 15px; color: white; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                <i class="fas fa-user"></i>
+                                Profile
+                            </a>
+                            <a href="{{ url_for('plugwise_me') }}" style="display: flex; align-items: center; gap: 8px; padding: 10px 15px; color: white; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                <i class="fas fa-bookmark"></i>
+                                My Bookings
+                            </a>
+                            <a href="{{ url_for('logout') }}" style="display: flex; align-items: center; gap: 8px; padding: 10px 15px; color: #ff4444; text-decoration: none;">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Logout
+                            </a>
+                        </div>
+                    </div>
+                </li>
+            {% else %}
+                <li><a href="{{ url_for('login') }}" class="login-btn" style="background: var(--primary); padding: 8px 20px; border-radius: 20px; transition: background-color 0.3s;">Login</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <section class="hero">
+        <h1 class="animate__animated animate__fadeInDown">Find EV Charging Stations Near You</h1>
+        <p class="animate__animated animate__fadeIn animate__delay-1s">Locate the nearest charging station, check availability, and plan your journey with ease.</p>
+    </section>
+
+    <div class="search-container">
+        <div class="search-box floating">
+            <input type="text" id="city-search" placeholder="Enter city name...">
+            <div id="search-suggestions" class="suggestions"></div>
+        </div>
+    </div>
+    
+
+    <div id="map" class="map-container"></div>
+    <div class="services-container">
+        <h2><center>Why choose PlugWise</center></h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <i class="fas fa-map-marker-alt"></i>
+                <h3>Smart Navigation</h3>
+                <p>Find the nearest charging station with real-time availability</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-clock"></i>
+                <h3>Real-time Availability</h3>
+                <p>Check current status and waiting times at charging stations</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-calendar-check"></i>
+                <h3>Easy payments</h3>
+                <p>Reserve your spot at the charging station</p>
+            </div>
+            <div class="service-card">
+                <i class="fa-solid fa-location-crosshairs"></i>
+                <h3>Favourite locations</h3>
+                <p>Charge with ur fav stations</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="services-container">
+        <h2><center>Our Services</center></h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <i class="fa-solid fa-route"></i>
+                <h3>Navigate to the nearest station</h3>
+                <p>Locate the closest EV charging station to your current location</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-clock"></i>
+                <h3>Real-time Availability</h3>
+                <p>Check current status and waiting times at charging stations</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-calendar-check"></i>
+                <h3>Book Charging Point</h3>
+                <p>Reserve your spot at the charging station</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-tools"></i>
+                <h3>EV Maintenance help
+                    (A Quick guide)</h3>
+                <p>Get expert help and support for your electric vehicle</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>PLUGWISE</h3>
+                <p>Making EV charging accessible and convenient</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                    <li><a href="{{ url_for('station_info') }}">Stations</a></li>
+                    <li><a href="{{ url_for('support') }}">Support</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p>Email: support@plugwise.com</p>
+                <p>Phone: 1800-EV-CHARGE</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 PLUGWISE. All rights reserved.</p>
+        </div>
+    </footer>
+    <script>
+        // Initialize map
+        let map;
+        let markers = [];
+        let searchTimeout;
+
+        function initMap() {
+            map = L.map('map').setView([20.5937, 78.9629], 5); // Center of India
+            
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Add sample charging stations
+            const stations = [
+                { lat: 18.5204, lng: 73.8567, name: "Pune Central Charging Hub", type: "Fast Charging" },
+                { lat: 18.5089, lng: 73.9259, name: "Viman Nagar EV Station", type: "Fast Charging" },
+                { lat: 18.4519, lng: 73.8508, name: "Swargate Charging Point", type: "Standard Charging" },
+                { lat: 18.5793, lng: 73.9089, name: "Kharadi Tech Park EV Station", type: "Fast Charging" },
+                { lat: 18.4537, lng: 73.8453, name: "Katraj EV Station", type: "Standard Charging" },
+                { lat: 18.5642, lng: 73.7768, name: "Baner High Street Charging Hub", type: "Fast Charging" },
+                { lat: 18.5007, lng: 73.8567, name: "Camp Area Charging Station", type: "Standard Charging" },
+                { lat: 18.5156, lng: 73.9257, name: "Phoenix Mall EV Station", type: "Fast Charging" },
+                // Existing stations
+                { lat: 19.0760, lng: 72.8777, name: "Mumbai Charging Station", type: "Fast Charging" },
+                { lat: 28.6139, lng: 77.2090, name: "Delhi Charging Station", type: "Standard Charging" },
+                { lat: 12.9716, lng: 77.5946, name: "Bangalore Charging Station", type: "Fast Charging" },
+                { lat: 22.5726, lng: 88.3639, name: "Kolkata Charging Station", type: "Standard Charging" },
+                { lat: 13.0827, lng: 80.2707, name: "Chennai Charging Station", type: "Fast Charging" }
+            ];
+
+            stations.forEach(station => {
+                const marker = L.marker([station.lat, station.lng], {
+                    icon: L.divIcon({
+                        className: 'custom-marker pulse-animation',
+                        iconSize: [16, 16]
+                    })
+                }).addTo(map);
+
+                marker.bindPopup(`
+                    <h3>${station.name}</h3>
+                    <p>${station.type}</p>
+                `);
+
+                markers.push(marker);
+            });
+
+            // Add pulse effect to popups when they open
+            map.on('popupopen', function(e) {
+                const popup = e.popup.getElement();
+                if (popup) {
+                    popup.classList.add('animate__animated', 'animate__pulse');
+                    popup.addEventListener('animationend', () => {
+                        popup.classList.remove('animate__animated', 'animate__pulse');
+                    });
+                }
+            });
+        }
+
+        // City and station data
+        const cityStations = {
+            'pune': [
+                {
+                    id: 'pune-central',
+                    name: 'Pune Central Charging Hub',
+                    address: '123 MG Road, Camp',
+                    type: 'Fast Charging'
+                },
+                {
+                    id: 'viman-nagar',
+                    name: 'Viman Nagar EV Station',
+                    address: '45 Phoenix Mall Road',
+                    type: 'Fast Charging'
+                },
+                {
+                    id: 'swargate',
+                    name: 'Swargate Charging Point',
+                    address: '78 Satara Road',
+                    type: 'Standard Charging'
+                },
+                {
+                    id: 'wakad',
+                    name: 'Shell Recharge Charging Station',
+                    address: 'Service Rd, Tathawade, Pimpri-Chinchwad',
+                    type: 'Fast Charging'
+                },
+                {
+                    id: 'balewadi',
+                    name: 'Evnnovator Charging Station',
+                    address: 'Bhandari Motors, Mercedes Benz, Veerbhadra Nagar Rd, Mahalunge',
+                    type: 'Fast Charging'
+                }
+            ],
+            'mumbai': [
+                {
+                    id: 'mumbai-central',
+                    name: 'Mumbai Central EV Hub',
+                    address: '34 Central Avenue',
+                    type: 'Fast Charging'
+                }
+            ],
+            'bangalore': [
+                {
+                    id: 'bangalore-central',
+                    name: 'Bangalore Central Station',
+                    address: '56 MG Road',
+                    type: 'Fast Charging'
+                }
+            ]
+        };
+
+        const searchInput = document.getElementById('city-search');
+        const suggestionsDiv = document.getElementById('search-suggestions');
+
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase();
+            
+            if (query.length > 2) {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    suggestionsDiv.innerHTML = '';
+                    
+                    // Search through cities and their stations
+                    Object.keys(cityStations).forEach(city => {
+                        if (city.includes(query)) {
+                            const stations = cityStations[city];
+                            stations.forEach(station => {
+                                const div = document.createElement('div');
+                                div.className = 'station-suggestion animate__animated animate__fadeIn';
+                                div.innerHTML = `
+                                    <h3>${station.name}</h3>
+                                    <p>${station.address}</p>
+                                    <span class="station-type">${station.type}</span>
+                                `;
+                                div.addEventListener('click', () => {
+                                    suggestionsDiv.classList.remove('active');
+                                    window.location.href = "{{ url_for('station_info') }}?id=" + station.id;
+                                });
+                                suggestionsDiv.appendChild(div);
+                            });
+                        }
+                    });
+
+                    if (suggestionsDiv.children.length > 0) {
+                        suggestionsDiv.classList.add('active');
+                    } else {
+                        suggestionsDiv.innerHTML = '<div class="suggestion-item animate__animated animate__fadeIn">No charging stations found</div>';
+                        suggestionsDiv.classList.add('active');
+                    }
+                }, 300);
+            } else {
+                suggestionsDiv.classList.remove('active');
+            }
+        });
+
+        // Close suggestions when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target) && !suggestionsDiv.contains(e.target)) {
+                suggestionsDiv.classList.remove('active');
+            }
+        });
+
+       
+
+        // Scroll reveal animation
+        function reveal() {
+            const reveals = document.querySelectorAll('.reveal');
+            
+            for (let i = 0; i < reveals.length; i++) {
+                const windowHeight = window.innerHeight;
+                const elementTop = reveals[i].getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add('active');
+                } else {
+                    reveals[i].classList.remove('active');
+                }
+            }
+        }
+        
+        window.addEventListener('scroll', reveal);
+        
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Initialize map when the page loads
+        window.addEventListener('load', function() {
+            initMap();
+            reveal(); // Check reveal on load
+        });
+
+        function toggleUserMenu() {
+            const menu = document.getElementById('userMenu');
+            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('userMenu');
+            const userInfo = event.target.closest('.user-info');
+            if (!userInfo && menu.style.display === 'block') {
+                menu.style.display = 'none';
+            }
+        });
+    </script>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    {% block content %}
+    {% endblock %}
+</body>
+</html>

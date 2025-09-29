@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLUGWISE | Booking Confirmation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3a86ff;
+            --primary-dark: #2667cc;
+            --background: #121212;
+            --surface: #1e1e1e;
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+            --success: #4caf50;
+            --card-bg: #252525;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background-color: var(--background);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background-color: var(--surface);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo img {
+            height: 40px;
+        }
+
+        .confirmation-container {
+            max-width: 800px;
+            margin: 100px auto 2rem;
+            padding: 2rem;
+        }
+
+        .confirmation-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: var(--success);
+            margin-bottom: 1rem;
+            animation: bounce 1s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .confirmation-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .confirmation-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .booking-details {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+            text-align: left;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .detail-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: var(--text-secondary);
+        }
+
+        .detail-value {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .total-amount {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border: none;
+            margin-top: 2rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn i {
+            margin-right: 0.5rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+                padding: 0 !important;
+            }
+
+            .navbar, .btn {
+                display: none !important;
+            }
+
+            .confirmation-container {
+                margin: 0 auto !important;
+                padding: 1rem !important;
+            }
+
+            .confirmation-card {
+                box-shadow: none !important;
+                background: white !important;
+                padding: 0 !important;
+            }
+
+            .booking-details {
+                background: white !important;
+                border: 1px solid #ddd !important;
+            }
+
+            .detail-label {
+                color: #666 !important;
+            }
+
+            .detail-value {
+                color: black !important;
+            }
+
+            .total-amount {
+                color: black !important;
+                font-weight: bold !important;
+            }
+
+            .detail-item {
+                border-bottom-color: #ddd !important;
+            }
+
+            .success-icon {
+                color: #4caf50 !important;
+                animation: none !important;
+            }
+
+            .confirmation-title {
+                color: black !important;
+            }
+
+            .confirmation-subtitle {
+                color: #666 !important;
+            }
+
+            /* Add QR code space for physical verification */
+            .qr-code-print {
+                display: block !important;
+                margin: 2rem auto !important;
+                width: 150px !important;
+                height: 150px !important;
+                background: #f5f5f5 !important;
+                border: 1px solid #ddd !important;
+            }
+
+            /* Add additional print information */
+            .print-info {
+                display: block !important;
+                text-align: center !important;
+                margin-top: 2rem !important;
+                padding-top: 1rem !important;
+                border-top: 1px solid #ddd !important;
+                color: #666 !important;
+            }
+        }
+
+        .qr-code-print, .print-info {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <a href="/">
+                <img src="{{ url_for('static', filename='images/Logo-no-bg.png') }}" alt="PLUGWISE Logo">
+            </a>
+        </div>
+    </nav>
+
+    <div class="confirmation-container">
+        <div class="confirmation-card">
+            <i class="fas fa-check-circle success-icon"></i>
+            <h1 class="confirmation-title">Booking Confirmed!</h1>
+            <p class="confirmation-subtitle">Your booking has been successfully confirmed. Here are your booking details:</p>
+            
+            <div class="booking-details">
+                <h3>Booking Details</h3>
+                <div class="detail-item">
+                    <div class="detail-label">
+                        <i class="fas fa-ticket-alt"></i>
+                        <span>Booking ID</span>
+                    </div>
+                    <div class="detail-value">{{ booking.booking_id }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">
+                        <i class="fas fa-car"></i>
+                        <span>Vehicle Details</span>
+                    </div>
+                    <div class="detail-value">{{ booking.vehicle_type }} - {{ booking.vehicle_brand }} {{ booking.vehicle_model }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">
+                        <i class="fas fa-hashtag"></i>
+                        <span>Vehicle Number</span>
+                    </div>
+                    <div class="detail-value">{{ booking.vehicle_number }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Charging Station</span>
+                    </div>
+                    <div class="detail-value">{{ booking.station_name }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">
+                        <i class="fas fa-calendar"></i>
+                        <span>Date</span>
+                    </div>
+                    <div class="detail-value">{{ booking.date }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">
+                        <i class="fas fa-clock"></i>
+                        <span>Time Slot</span>
+                    </div>
+                    <div class="detail-value">{{ booking.time_slot }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">
+                        <i class="fas fa-charging-station"></i>
+                        <span>Charger Type</span>
+                    </div>
+                    <div class="detail-value">{{ booking.charger_type }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">
+                        <i class="fas fa-plug"></i>
+                        <span>Plug Type</span>
+                    </div>
+                    <div class="detail-value">{{ booking.plug_type }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">
+                        <i class="fas fa-money-bill"></i>
+                        <span>Amount Paid</span>
+                    </div>
+                    <div class="detail-value">₹{{ booking.amount }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">
+                        <i class="fas fa-credit-card"></i>
+                        <span>Payment Method</span>
+                    </div>
+                    <div class="detail-value">{{ booking.payment_method }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Status</span>
+                    </div>
+                    <div class="detail-value status-confirmed">{{ booking.payment_status }}</div>
+                </div>
+            </div>
+
+            <!-- QR Code placeholder - only shows in print -->
+            <div class="qr-code-print"></div>
+
+            <!-- Print information - only shows in print -->
+            <div class="print-info">
+                <p>Please arrive 15 minutes before your scheduled time slot.</p>
+                <p>Show this ticket at the charging station for verification.</p>
+                <p>For support, contact: support@plugwise.com</p>
+            </div>
+
+            <div class="confirmation-actions">
+                <a href="{{ url_for('profile') }}" class="btn">
+                    <i class="fas fa-user"></i>
+                    View My Bookings
+                </a>
+                <button onclick="window.print()" class="btn btn-outline">
+                    <i class="fas fa-print"></i>
+                    Print Ticket
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
